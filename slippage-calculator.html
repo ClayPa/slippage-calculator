@@ -1,0 +1,240 @@
+<style>
+
+body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+            margin: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background-color: white;
+            padding: 20px 30px; /* Increased horizontal padding */
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+  .aw-calc-widget {
+    background: #fdfdfd;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 25px;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    max-width: 650px;
+    margin: 30px auto;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  }
+  .aw-calc-header {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .aw-calc-header h3 {
+    margin: 0;
+    color: #2c3e50;
+    font-size: 22px;
+    font-weight: 700;
+  }
+  .aw-calc-header p {
+    color: #7f8c8d;
+    font-size: 14px;
+    margin-top: 5px;
+  }
+  .aw-calc-body {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: space-between;
+  }
+  .aw-input-group {
+    flex: 1;
+    min-width: 200px;
+    display: flex;
+    flex-direction: column;
+  }
+  .aw-input-group label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #34495e;
+    margin-bottom: 5px;
+  }
+  .aw-input-group input {
+    padding: 10px;
+    border: 1px solid #bdc3c7;
+    border-radius: 4px;
+    font-size: 16px;
+  }
+  .aw-results-box {
+    background: #fff0f0; /* Light red background for 'loss' */
+    border-left: 5px solid #e74c3c;
+    padding: 15px;
+    margin-top: 20px;
+    border-radius: 4px;
+    display: none; /* Hidden by default */
+    animation: fadeIn 0.5s;
+  }
+  .aw-results-text {
+    font-size: 16px;
+    color: #c0392b;
+    margin-bottom: 10px;
+    line-height: 1.5;
+  }
+  .aw-highlight-loss {
+    font-weight: 800;
+    font-size: 20px;
+  }
+  .aw-cta-btn {
+    display: block;
+    width: 100%;
+    text-align: center;
+    background-color: #27ae60;
+    color: white !important;
+    padding: 12px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 16px;
+    margin-top: 10px;
+    transition: background 0.3s;
+  }
+  .aw-cta-btn:hover {
+    background-color: #219150;
+  }
+  .aw-calc-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: #2980b9;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    font-weight: 600;
+    margin-top: 10px;
+  }
+  .aw-calc-btn:hover { background-color: #1f618d; }
+  
+  @media (max-width: 480px) {
+
+  /* Slight zoom-in effect so the widget doesn’t look tiny */
+  .aw-calc-widget {
+    padding: 18px;
+    margin: 15px 0;
+    transform: scale(1.05);
+    transform-origin: top center;
+  }
+
+  /* Header */
+  .aw-calc-header h3 {
+    font-size: 22px;
+  }
+
+  .aw-calc-header p {
+    font-size: 15px;
+  }
+
+  /* Inputs */
+  .aw-calc-body {
+    gap: 15px;
+  }
+
+  .aw-input-group {
+    min-width: 100%;
+  }
+
+  .aw-input-group label {
+    font-size: 15px;
+  }
+
+  .aw-input-group input {
+    font-size: 20px;   /* Bigger inputs for thumb typing */
+    padding: 14px 16px;
+  }
+
+  /* Button */
+  .aw-calc-btn {
+    font-size: 20px;
+    padding: 18px;
+    margin-top: 15px;
+  }
+
+  /* Result */
+  .aw-results-text {
+    font-size: 17px;
+  }
+
+  .aw-highlight-loss {
+    font-size: 28px;
+  }
+
+  .aw-cta-btn {
+    font-size: 20px;
+    padding: 18px;
+  }
+  
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+
+<div class="aw-calc-widget">
+  <div class="aw-calc-header">
+    <h3>📉 Slippage Profit Leak Calculator</h3>
+    <p>See how much latency is costing you per month.</p>
+  </div>
+  
+  <div class="aw-calc-body">
+    <div class="aw-input-group">
+      <label for="aw-lot-size">Average Lot Size (e.g. 0.1 or 1.0)</label>
+      <input type="number" id="aw-lot-size" placeholder="0.1" step="0.01">
+    </div>
+    <div class="aw-input-group">
+      <label for="aw-trades-day">Trades Per Day</label>
+      <input type="number" id="aw-trades-day" placeholder="5">
+    </div>
+  </div>
+
+  <button class="aw-calc-btn" onclick="calculateSlippage()">Calculate My Loss</button>
+
+  <div id="aw-result" class="aw-results-box">
+    <div class="aw-results-text">
+      Running these trades from a Home PC (avg 200ms latency) causes approx <span id="aw-loss-amount" class="aw-highlight-loss">$0.00</span> in slippage losses per month.
+    </div>
+    <div style="font-size: 14px; color: #555; margin-bottom: 15px;">
+      An <strong>AccuWeb Forex VPS</strong> (1-2ms latency) costs just <strong>$7.99/mo</strong>.
+    </div>
+    <a href="https://www.accuwebhosting.com/vps-hosting/forex-trading-vps" class="aw-cta-btn">
+      👉 Stop Losing Money - Get Forex VPS ($7.99)
+    </a>
+  </div>
+</div>
+
+<script>
+  function calculateSlippage() {
+    // Inputs
+    let lotSize = parseFloat(document.getElementById('aw-lot-size').value);
+    let trades = parseFloat(document.getElementById('aw-trades-day').value);
+    
+    // Validation
+    if (isNaN(lotSize) || isNaN(trades)) {
+      alert("Please enter valid numbers for Lot Size and Trades.");
+      return;
+    }
+
+    // Logic: 
+    // Standard Lot (1.0) = $10/pip. Mini (0.1) = $1/pip.
+    // Pip Value per trade = Lot Size * 10.
+    // Avg Slippage on Home PC vs VPS = 0.5 pips (Conservative Estimate).
+    // Trading Days = 20.
+    
+    let pipValue = lotSize * 10; 
+    let slippagePips = 0.5; 
+    let dailyLoss = trades * slippagePips * pipValue;
+    let monthlyLoss = dailyLoss * 20;
+
+    // Formatting currency
+    let formattedLoss = monthlyLoss.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+
+    // Display Result
+    document.getElementById('aw-loss-amount').innerText = formattedLoss;
+    document.getElementById('aw-result').style.display = 'block';
+  }
+</script>
